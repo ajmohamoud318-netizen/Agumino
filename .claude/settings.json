@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv /Users/m7/Desktop/react-app /Users/m7/Desktop/Agumino)",
+      "Bash(git -C /Users/m7/Desktop/Agumino status)",
+      "Bash(git commit -m ' *)"
+    ],
+    "additionalDirectories": [
+      "/Users/m7/Desktop"
+    ]
+  }
+}

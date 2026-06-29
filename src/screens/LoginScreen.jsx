@@ -11,7 +11,7 @@ const savedCredentials = loadRememberedCredentials();
 const passwordRules = [
   { key: "length", label: "En az 8 karakter", test: (v) => v.length >= 8 },
   { key: "upper", label: "En az 1 büyük harf", test: (v) => /[A-ZÇĞİÖŞÜ]/.test(v) },
-  { key: "lower", label: "En az 1 küçük harf", test: (v) => /[a-zçğıöşü]/.test(v) },
+  { key: "special", label: "En az 1 özel karakter (!, @, #, $, %)", test: (v) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(v) },
   { key: "number", label: "En az 1 rakam", test: (v) => /\d/.test(v) },
 ];
 
@@ -108,12 +108,16 @@ export default function LoginScreen({ onLogin }) {
                 <p className="password-rules-title">Şifre koşulları</p>
                 {passwordChecks.map((rule) => (
                   <div key={rule.key} className={`password-rule${rule.passed ? " passed" : ""}`}>
-                    <span>{rule.passed ? "✓" : "•"}</span>
+                    <span className="password-rule-box">
+                      {rule.passed && <svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </span>
                     {rule.label}
                   </div>
                 ))}
                 <div className={`password-rule${passwordsMatch ? " passed" : ""}`}>
-                  <span>{passwordsMatch ? "✓" : "•"}</span>
+                  <span className="password-rule-box">
+                    {passwordsMatch && <svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </span>
                   Şifreler eşleşiyor
                 </div>
               </div>

@@ -11,26 +11,45 @@ export default function ChildDetailScreen({ childName, posts, onAddMemory, onOpe
     </div>
   );
 
+  const coverPost = childPosts[0];
+
   return (
-    <div className="stack">
-      <div className="child-album-summary">
-        <div className="post-avatar">{childName[0].toUpperCase()}</div>
-        <div>
-          <p>{childName}</p>
-          <span>{childPosts.length} anı</span>
+    <div className="cd-root">
+      {/* Profile header */}
+      <div className="cd-header">
+        <div className="cd-avatar-ring">
+          <div className="cd-avatar-photo">
+            <img
+              className="cd-avatar-img"
+              style={compositionStyle(coverPost.composition)}
+              src={coverPost.imageURL}
+              alt={childName}
+            />
+            {coverPost.frameURL && (
+              <img className="cd-avatar-frame" src={coverPost.frameURL} alt="" />
+            )}
+          </div>
         </div>
+        <h2 className="cd-name">{childName}</h2>
+        <p className="cd-count">{childPosts.length} anı</p>
+        <button className="cd-add-btn" onClick={onAddMemory}>
+          + Anı Ekle
+        </button>
       </div>
-      <div className="album-grid">
+
+      {/* Photo grid */}
+      <div className="cd-grid">
         {childPosts.map((post) => (
-          <button key={post.id} className="album-tile" onClick={() => onOpenOptions(post.id)}>
-            <div className="album-tile-media">
-              <img className="album-tile-photo" style={compositionStyle(post.composition)} src={post.imageURL} alt={`${post.childName} anısı`} />
-              {post.frameURL && <img className="album-tile-frame" src={post.frameURL} alt="" />}
-            </div>
-            <div className="album-tile-meta">
-              <span>{post.childName}</span>
-              <small>{formatPostDate(post.createdAt)}</small>
-            </div>
+          <button key={post.id} className="cd-tile" onClick={() => onOpenOptions(post.id)}>
+            <img
+              className="cd-tile-img"
+              style={compositionStyle(post.composition)}
+              src={post.imageURL}
+              alt=""
+            />
+            {post.frameURL && (
+              <img className="cd-tile-frame" src={post.frameURL} alt="" />
+            )}
           </button>
         ))}
       </div>

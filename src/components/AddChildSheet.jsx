@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 export default function AddChildSheet({ open, onClose, onAdd }) {
   const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
 
   useEffect(() => {
-    if (open) setName("");
+    if (open) { setName(""); setBirthDate(""); }
   }, [open]);
 
   if (!open) return null;
@@ -13,7 +14,7 @@ export default function AddChildSheet({ open, onClose, onAdd }) {
     e.preventDefault();
     const value = name.trim();
     if (!value) return;
-    onAdd(value);
+    onAdd(value, birthDate || null);
     onClose();
   };
 
@@ -31,6 +32,15 @@ export default function AddChildSheet({ open, onClose, onAdd }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Örn. Deniz"
           autoFocus
+        />
+        <label className="login-label" htmlFor="child-birth" style={{ marginTop: 12 }}>Doğum tarihi <span style={{ color: "var(--muted)", fontWeight: 400 }}>(isteğe bağlı)</span></label>
+        <input
+          id="child-birth"
+          className="login-input"
+          type="date"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
+          max={new Date().toISOString().split("T")[0]}
         />
         <div className="add-child-actions">
           <button className="add-child-secondary" type="button" onClick={onClose}>Vazgeç</button>

@@ -2,7 +2,7 @@ import Icon from "./Icon";
 
 const SCREEN_TITLES = { shares: "Albümler", children: "Çocuklar", profile: "Profil", notifications: "Bildirimler" };
 
-export default function TopNav({ screen, childName, onBack, onAdd, onNotifications, onMenu }) {
+export default function TopNav({ screen, childName, canGoBack, onBack, onAdd, onNotifications, onMenu }) {
   const isHome = screen === "home";
   const isProfile = screen === "profile";
   const title = screen === "child-detail" ? childName : (SCREEN_TITLES[screen] ?? "");

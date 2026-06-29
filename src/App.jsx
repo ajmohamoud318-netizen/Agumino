@@ -50,7 +50,7 @@ export default function App() {
   const editingPost = posts.find((p) => p.id === editingPostId) || null;
 
   const push = (name) => setScreenHistory((h) => [...h, name]);
-  const goBack = () => setScreenHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
+  const goBack = () => setScreenHistory((h) => (h.length > 1 ? h.slice(0, -1) : ["home"]));
   const showTab = (name) => setScreenHistory([name]);
 
   const openPhotoPicker = () => {
@@ -83,7 +83,7 @@ export default function App() {
     setPendingComposition(composition);
     setFramePickerOpen(false);
     if (childrenList.length === 1) {
-      createPost(childrenList[0], pendingImageURL, frameURL, composition);
+      createPost(childrenList[0].name, pendingImageURL, frameURL, composition);
       showTab("home");
     } else {
       setChildPickerOpen(true);
@@ -127,6 +127,7 @@ export default function App() {
       <TopNav
         screen={activeScreen}
         childName={activeChildName}
+        canGoBack={screenHistory.length > 1}
         onBack={goBack}
         onAdd={openPhotoPicker}
         onNotifications={() => push("notifications")}
@@ -137,14 +138,14 @@ export default function App() {
           <section key={name} className={`screen${activeScreen === name ? " active" : ""}`} data-screen={name}>
             {name === "home" && <HomeScreen homeState={homeState} posts={posts} onAddChild={() => setAddChildOpen(true)} onAddMemory={openPhotoPicker} onToggleLike={toggleLike} onOpenComments={setCommentsPostId} onOpenOptions={setOptionsPostId} />}
             {name === "shares" && <SharesScreen posts={posts} onOpenChild={(child) => { setActiveChildName(child); push("child-detail"); }} />}
-            {name === "children" && <ChildrenScreen childrenList={childrenList} posts={posts} onAddChild={() => setAddChildOpen(true)} onChildTap={(child) => { setActiveChildName(child); push("child-detail"); }} />}
+            {name === "children" && <ChildrenScreen childrenList={childrenList} posts={posts} onAddChild={() => setAddChildOpen(true)} onChildTap={(child) => { setActiveChildName(child.name); push("child-detail"); }} />}
             {name === "profile" && <ProfileScreen onLogout={() => setLoggedIn(false)} />}
             {name === "child-detail" && <ChildDetailScreen childName={activeChildName} posts={posts} onAddMemory={openPhotoPicker} onOpenOptions={setOptionsPostId} />}
             {name === "notifications" && <NotificationsScreen />}
           </section>
         ))}
       </main>
-      <BottomTabs active={TAB_LIST.includes(activeScreen) ? activeScreen : ""} onChange={showTab} />
+      <BottomTabs active={TAB_LIST.includes(activeScreen) ? activeScreen : ""} onChange={push} />
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <FramePicker

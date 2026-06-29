@@ -22,7 +22,7 @@ export default function HomeScreen({ homeState, posts, onAddChild, onAddMemory, 
 
   return (
     <div className="stack">
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {posts.map((post) => (
           <PostCard key={post.id} {...post} onToggleLike={onToggleLike} onOpenComments={onOpenComments} onOpenOptions={onOpenOptions} />
         ))}

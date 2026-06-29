@@ -1,5 +1,12 @@
 import { useRef, useState } from "react";
 import Icon from "../components/Icon";
+import {
+  clearRememberedCredentials,
+  loadRememberedCredentials,
+  saveRememberedCredentials,
+} from "../services/storage";
+
+const savedCredentials = loadRememberedCredentials();
 
 const passwordRules = [
   { key: "length", label: "En az 8 karakter", test: (v) => v.length >= 8 },
@@ -10,8 +17,8 @@ const passwordRules = [
 
 export default function LoginScreen({ onLogin }) {
   const [mode, setMode] = useState("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(savedCredentials?.email || "");
+  const [password, setPassword] = useState(savedCredentials?.password || "");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -19,7 +26,7 @@ export default function LoginScreen({ onLogin }) {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(Boolean(savedCredentials));
   const [error, setError] = useState("");
   const signupInputRefs = useRef([]);
   const loginInputRefs = useRef([]);
@@ -42,24 +49,30 @@ export default function LoginScreen({ onLogin }) {
     next === "submit" ? e.currentTarget.form?.requestSubmit() : loginInputRefs.current[next]?.focus();
   };
 
+  const VALID_EMAIL = "agumino@gmail.com";
+  const VALID_PASSWORD = "12345";
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) { setError("Lütfen tüm alanları doldurun."); return; }
     if (mode === "signup" && (!name || !surname || !birthDate || !repeatPassword)) { setError("Lütfen tüm zorunlu alanları doldurun."); return; }
     if (mode === "signup" && !passwordIsValid) { setError("Lütfen şifre koşullarını tamamlayın."); return; }
     if (mode === "signup" && password !== repeatPassword) { setError("Şifreler eşleşmiyor."); return; }
+    if (mode === "login") {
+      if (email !== VALID_EMAIL || password !== VALID_PASSWORD) { setError("E-posta veya şifre hatalı."); return; }
+      if (rememberMe) saveRememberedCredentials(email, password);
+      else clearRememberedCredentials();
+    }
     setError("");
     onLogin();
   };
 
   return (
     <div className="login-screen">
-      <div className={`login-card${mode === "signup" ? " signup-card" : ""}`}>
+      <div className={`login-card${mode === "signup" ? " signup-card" : " login-only-card"}`}>
         <div className="login-logo-wrap">
           <img className="login-logo" src="/logo.png.png" alt="Agumino" />
         </div>
-        {mode === "login" && <h1 className="login-title">Tekrar hoş geldin</h1>}
-        {mode === "login" && <p className="login-sub">Aile albümüne devam et</p>}
         <form className={`login-form${mode === "signup" ? " signup-form" : ""}`} onSubmit={handleSubmit}>
           {mode === "signup" ? (
             <>
@@ -84,12 +97,12 @@ export default function LoginScreen({ onLogin }) {
               <div className="signup-field with-icon with-trailing-icon">
                 <Icon name="lock" />
                 <input ref={(el) => { signupInputRefs.current[4] = el; }} type={showPassword ? "text" : "password"} placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => handleSignupKeyDown(e, 5)} autoComplete="new-password" enterKeyHint="next" />
-                <button className="signup-icon-button" type="button" onClick={() => setShowPassword((v) => !v)} aria-label="Şifreyi göster"><Icon name="eye" /></button>
+                <button className="signup-icon-button" type="button" onClick={() => setShowPassword((v) => !v)} aria-label="Şifreyi göster"><Icon name={showPassword ? "eye-off" : "eye"} /></button>
               </div>
               <div className="signup-field with-icon with-trailing-icon">
                 <Icon name="lock" />
                 <input ref={(el) => { signupInputRefs.current[5] = el; }} type={showRepeatPassword ? "text" : "password"} placeholder="Şifre Tekrar" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} onKeyDown={(e) => handleSignupKeyDown(e, 6)} autoComplete="new-password" enterKeyHint="next" />
-                <button className="signup-icon-button" type="button" onClick={() => setShowRepeatPassword((v) => !v)} aria-label="Şifre tekrarını göster"><Icon name="eye" /></button>
+                <button className="signup-icon-button" type="button" onClick={() => setShowRepeatPassword((v) => !v)} aria-label="Şifre tekrarını göster"><Icon name={showRepeatPassword ? "eye-off" : "eye"} /></button>
               </div>
               <div className="password-rules">
                 <p className="password-rules-title">Şifre koşulları</p>
@@ -111,13 +124,20 @@ export default function LoginScreen({ onLogin }) {
             </>
           ) : (
             <>
-              <div className="login-field">
-                <label className="login-label">E-posta</label>
-                <input ref={(el) => { loginInputRefs.current[0] = el; }} className="login-input" type="email" placeholder="ornek@email.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => handleLoginKeyDown(e, 1)} autoComplete="email" enterKeyHint="next" />
+              {error && (
+                <div className="login-error-banner">
+                  <Icon name="alert-circle" />
+                  <span>{error}</span>
+                </div>
+              )}
+              <div className="signup-field with-icon">
+                <Icon name="mail" />
+                <input ref={(el) => { loginInputRefs.current[0] = el; }} type="email" placeholder="E-posta" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => handleLoginKeyDown(e, 1)} autoComplete="email" enterKeyHint="next" />
               </div>
-              <div className="login-field">
-                <label className="login-label">Şifre</label>
-                <input ref={(el) => { loginInputRefs.current[1] = el; }} className="login-input" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => handleLoginKeyDown(e, "submit")} autoComplete="current-password" enterKeyHint="done" />
+              <div className="signup-field with-icon with-trailing-icon">
+                <Icon name="lock" />
+                <input ref={(el) => { loginInputRefs.current[1] = el; }} type={showPassword ? "text" : "password"} placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => handleLoginKeyDown(e, "submit")} autoComplete="current-password" enterKeyHint="done" />
+                <button className="signup-icon-button" type="button" onClick={() => setShowPassword((v) => !v)} aria-label="Şifreyi göster"><Icon name={showPassword ? "eye-off" : "eye"} /></button>
               </div>
               <div className="login-options">
                 <label className="remember-row">
@@ -128,7 +148,6 @@ export default function LoginScreen({ onLogin }) {
               </div>
             </>
           )}
-          {error && <p className="login-error">{error}</p>}
           <button className="login-btn" type="submit">{mode === "login" ? "Giriş Yap" : "Kayıt Ol"}</button>
         </form>
         <div className="login-switch">

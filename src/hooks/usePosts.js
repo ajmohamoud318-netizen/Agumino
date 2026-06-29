@@ -40,7 +40,7 @@ export function usePosts() {
     );
   };
 
-  const addComment = (postId, text) => {
+  const addComment = (postId, text, parentId = null) => {
     setPosts((prev) =>
       prev.map((post) => {
         if (post.id !== postId) return post;
@@ -52,6 +52,7 @@ export function usePosts() {
               id: makePostId(),
               author: "Kullanıcı",
               text,
+              parentId,
               createdAt: new Date().toISOString(),
             },
           ],

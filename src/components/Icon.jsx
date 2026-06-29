@@ -10,6 +10,7 @@ export default function Icon({ name, style }) {
   if (name === "calendar") return <svg {...s} strokeWidth="2.2"><rect x="4" y="5" width="16" height="16" rx="2" /><path d="M8 3v4M16 3v4M4 10h16" /></svg>;
   if (name === "lock") return <svg {...s} strokeWidth="2.2"><rect x="5" y="10" width="14" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /><path d="M12 15v2" /></svg>;
   if (name === "eye") return <svg {...s} strokeWidth="2.2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>;
+  if (name === "eye-off") return <svg {...s} strokeWidth="2.2"><path d="M17.9 17.9A10 10 0 0 1 12 20C5.5 20 2 12 2 12a17.7 17.7 0 0 1 5.1-6.1M9.9 5.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17.8 17.8 0 0 1-2.3 3.4" /><path d="M14.1 14.1A3 3 0 0 1 9.9 9.9" /><path d="m3 3 18 18" /></svg>;
   if (name === "back") return <svg {...s} strokeWidth="2.4"><path d="M15 18l-6-6 6-6" /></svg>;
   if (name === "menu") return <svg {...s} strokeWidth="2.4"><path d="M4 6h16M4 12h16M4 18h16" /></svg>;
   if (name === "user") return <svg viewBox="0 0 24 24" fill="currentColor" style={style}><path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0ZM5 21a7 7 0 0 1 14 0H5Z" /></svg>;
@@ -19,5 +20,6 @@ export default function Icon({ name, style }) {
   if (name === "dots") return <svg viewBox="0 0 24 24" fill="currentColor" style={style}><circle cx="5" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /></svg>;
   if (name === "shield") return <svg {...s} strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /></svg>;
   if (name === "doc") return <svg {...s} strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" /></svg>;
+  if (name === "alert-circle") return <svg {...s} strokeWidth="2.2"><circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h.01" /></svg>;
   return null;
 }
